@@ -3,6 +3,7 @@
 #include "TestTD.h"
 #include "PaperSpriteComponent.h"
 #include "Towers/TowerPlacerButton.h"
+#include "Towers/TowerBase.h"
 #include "TestTDStatics.h"
 #include "TowerPlacer.h"
 
@@ -78,8 +79,6 @@ void ATowerPlacer::showTowerButtons()
 	// make sure that this towerplacer is the only one with a menu open
 	deselectAllTowerPlacers();
 
-	availableTowers = { ETowerType::TypeA, ETowerType::TypeB, ETowerType::TypeC, ETowerType::TypeD };
-
 	if (UWorld* world = GetWorld())
 	{
 
@@ -101,6 +100,7 @@ void ATowerPlacer::showTowerButtons()
 				float scaleFactor = getScaleDifferenceWithActor(spawnedActor);
 				spawnedActor->SetActorScale3D(FVector(scaleFactor));
 
+				spawnedActor->onTowerSelected.AddDynamic(this, &ATowerPlacer::didSelectTower);
 				//TestTDStatics::PutInZPlane(spawnedActor);
 			}
 		}
@@ -109,6 +109,55 @@ void ATowerPlacer::showTowerButtons()
 	positionTowerButtons();
 
 	bIsShowingButtons = true;
+}
+
+void ATowerPlacer::didSelectTower(ETowerType towerType)
+{
+
+	if (UWorld* world = GetWorld())
+	{
+		const FVector location = GetActorLocation();
+		const FRotator rotation = GetActorRotation();
+		FActorSpawnParameters params;
+		//params.bNoFail = true;
+		//params.bAllowDuringConstructionScript = true;
+		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		switch (towerType)
+		{
+		case ETowerType::TypeA:
+			//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "SELECTED TYPE A");
+
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, "ATTEMPTING SPAWN!");
+			if (AActor* newTower = world->SpawnActor(availableTowerClasses[0], &location, &rotation, params))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, "SPAWN SUCCESS!");
+				TestTDStatics::putInCombatZPlane(newTower);
+
+				//newTower->SetActorLocation(location);
+				//newTower->SetActorRotation(rotation);
+
+				float scaleFactor = getScaleDifferenceWithActor(newTower);
+				newTower->SetActorScale3D(FVector(scaleFactor));
+				UE_LOG(LogTemp, Warning, TEXT("SCALE FACTOR: %f"), scaleFactor);
+				Destroy();
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "SPAWN FAIL!");
+			}
+			break;
+		case ETowerType::TypeB:
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "SELECTED TYPE B");
+			break;
+		case ETowerType::TypeC:
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "SELECTED TYPE C");
+			break;
+		case ETowerType::TypeD:
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "SELECTED TYPE D");
+			break;
+		}
+	}
 }
 
 void ATowerPlacer::positionTowerButtons()
@@ -130,7 +179,7 @@ void ATowerPlacer::positionTowerButtons()
 			newLocation.X = newX;
 			button->SetActorLocation(newLocation);
 
-			TestTDStatics::PutInZPlane(button);
+			TestTDStatics::putInUIZPlane(button);
 		}
 	}
 }
@@ -148,13 +197,23 @@ void ATowerPlacer::hideTowerButtons()
 	bIsShowingButtons = false;
 }
 
-float ATowerPlacer::getScaleDifferenceWithActor(AActor* actor)
+float ATowerPlacer::getScaleDifferenceWithActor(AActor* actor, bool reverse)
 {
 	float width = getWidth(this);
-
+	//width /= GetActorScale3D().X;
+	
 	float actorWidth = getWidth(actor);
+	//actorWidth /= actor->GetActorScale3D().X;
 
-	float scaleFactor = width / actorWidth;
+	float scaleFactor;
+	if (!reverse)
+	{
+		scaleFactor = width / actorWidth;
+	}
+	else
+	{
+		scaleFactor = actorWidth / width;
+	}
 
 	return scaleFactor;
 }

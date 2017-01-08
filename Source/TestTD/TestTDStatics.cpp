@@ -51,12 +51,15 @@ ABasicGameMode* TestTDStatics::GetBasicGameMode(UObject* WorldContextObject)
 	return Cast<ABasicGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
 }
 
-void TestTDStatics::PutInZPlane(AActor* ActorToMove)
+void TestTDStatics::putInCombatZPlane(AActor* ActorToMove)
 {
-	if (ABasicGameMode* GM = TestTDStatics::GetBasicGameMode(ActorToMove))
-	{
-		FVector Loc = ActorToMove->GetActorLocation();
-		Loc.Z = GM->PlayInZPlane;
-		ActorToMove->SetActorLocation(Loc);
-	}
+	FVector Loc = ActorToMove->GetActorLocation();
+	Loc.Z = TestTDStatics::getCombatZPlane();
+	ActorToMove->SetActorLocation(Loc);
+}
+void TestTDStatics::putInUIZPlane(AActor* ActorToMove)
+{
+	FVector Loc = ActorToMove->GetActorLocation();
+	Loc.Z = TestTDStatics::getUIZPlane();
+	ActorToMove->SetActorLocation(Loc);
 }

@@ -135,7 +135,7 @@ void ATowerBase::towerAI_Implementation(float DeltaSeconds)
 	if (AActor* Target = getTarget())
 	{
 
-		// TODO: maybe put this in a 
+		// TODO: maybe put this in a function
 		FVector DirectionToTarget = (Target->GetActorLocation() - GetActorLocation()).GetSafeNormal2D();
 		FVector forwardDirection = towerArrowComponent->GetForwardVector();
 		FQuat between = FQuat::FindBetweenVectors(DirectionToTarget, forwardDirection);
@@ -212,7 +212,7 @@ void ATowerBase::fire()
 		{
 			NewProjectile->SetActorLocation(Loc);
 			NewProjectile->SetActorRotation(Rot);
-			TestTDStatics::PutInZPlane(NewProjectile);
+			TestTDStatics::putInCombatZPlane(NewProjectile);
 		}
 	}
 }

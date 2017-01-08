@@ -36,20 +36,22 @@ void ALevelEndTarget::Tick(float DeltaTime)
 		/*FCollisionShape collisionShape;
 		collisionShape.SetBox(endVolume->GetUnscaledBoxExtent());*/
 		//world->OverlapAnyTestByProfile()
-
-		TArray<FOverlapResult> overlapResults;
-		FVector boxSize = endVolume->GetScaledBoxExtent();
-
-		FCollisionShape collisionShape;
-		collisionShape.SetBox(boxSize);
-		//world->OverlapMultiByProfile(hitResults,endVolume->GetComponentLocation())
-		world->OverlapMultiByProfile(overlapResults, endVolume->GetComponentLocation(), endVolume->GetComponentRotation().Quaternion(), collisionProfile, collisionShape);
-		
-		for (const FOverlapResult& overlapResult : overlapResults)
+		if (endVolume)
 		{
-			if (ABaddieCharacter* baddie = Cast<ABaddieCharacter>(overlapResult.Actor.Get()))
+			TArray<FOverlapResult> overlapResults;
+			FVector boxSize = endVolume->GetScaledBoxExtent();
+
+			FCollisionShape collisionShape;
+			collisionShape.SetBox(boxSize);
+			//world->OverlapMultiByProfile(hitResults,endVolume->GetComponentLocation())
+			world->OverlapMultiByProfile(overlapResults, endVolume->GetComponentLocation(), endVolume->GetComponentRotation().Quaternion(), collisionProfile, collisionShape);
+
+			for (const FOverlapResult& overlapResult : overlapResults)
 			{
-				baddie->didReachLevelEnd();
+				if (ABaddieCharacter* baddie = Cast<ABaddieCharacter>(overlapResult.Actor.Get()))
+				{
+					baddie->didReachLevelEnd();
+				}
 			}
 		}
 

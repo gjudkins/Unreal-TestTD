@@ -6,7 +6,6 @@
 #include "Touchable.h"
 #include "TowerPlacer.generated.h"
 
-
 UENUM(BlueprintType)
 enum class ETowerType : uint8
 {
@@ -42,9 +41,9 @@ public:
 
 	//UFUNCTION(BlueprintImplementableEvent)
 	//void hideTowerSelector();
-	//
-	//UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "TowerPlacer")
-	//void didSelectTower();
+	
+	UFUNCTION(BlueprintCallable, Category = "TowerPlacer")
+	void didSelectTower(ETowerType towerType);
 
 	//UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "TowerPlacer")
 	//void createTowerSelectorWidget();
@@ -63,17 +62,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "TowerPlacer")
 	void didSelect() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TowerPlacer", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TowerPlacer", meta = (AllowPrivateAccess = "true"))
 	TArray<class UPaperSprite*> spriteIcons;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "TowerPlacer", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TowerPlacer", meta = (AllowPrivateAccess = "true"))
 	class UPaperSpriteComponent* towerPlacerSprite;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerPlacer", meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* towerPlacerBox;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerPlacer", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TowerPlacer", meta = (AllowPrivateAccess = "true"))
 	TArray<ETowerType> availableTowers;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "TowerPlacer", meta = (AllowPrivateAccess = "true"))
+	TArray<TSubclassOf<APawn>> availableTowerClasses;
 
 	UFUNCTION(BlueprintCallable, Category = "TowerPlacer")
 	void setAvailableTowers(TArray<ETowerType> _availableTowers);
@@ -91,7 +93,7 @@ public:
 	void positionTowerButtons();
 
 	UFUNCTION(BlueprintCallable, Category = "TowerPlacer")
-	float getScaleDifferenceWithActor(AActor* actor);
+	float getScaleDifferenceWithActor(AActor* actor, bool reverse = false);
 
 	UFUNCTION(BlueprintCallable, Category = "TowerPlacer")
 	float getWidth(AActor* actor);

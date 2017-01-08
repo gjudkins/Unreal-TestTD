@@ -33,4 +33,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "AI")
 	class ABaddieCharacter* pawnAsBaddie;
 
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	float getPathDistanceToTarget();
 };

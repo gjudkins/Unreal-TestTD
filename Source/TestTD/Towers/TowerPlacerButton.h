@@ -7,6 +7,8 @@
 #include "TowerPlacer.h"
 #include "TowerPlacerButton.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTowerSelected, ETowerType, typeSelected);
+
 UCLASS()
 class TESTTD_API ATowerPlacerButton : public AActor, public ITouchable
 {
@@ -33,4 +35,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TowerPlacerButton", meta = (AllowPrivateAccess = "true"))
 	ETowerType towerType = ETowerType::TypeA;
+
+	UPROPERTY(VisibleAnywhere, BlueprintAssignable, Category = "TowerPlacerDelegate", meta = (AllowPrivateAccess = "true"))
+	FOnTowerSelected onTowerSelected;
 };

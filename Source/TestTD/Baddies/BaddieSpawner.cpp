@@ -12,7 +12,7 @@ ABaddieSpawner::ABaddieSpawner()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	PrimaryActorTick.TickInterval = 1.0f;
+	PrimaryActorTick.TickInterval = 2.0f;
 
 	SpawnVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("SpawnVolume"));
 	FVector boxExtent = SpawnVolume->GetUnscaledBoxExtent();
@@ -33,7 +33,7 @@ void ABaddieSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	TestTDStatics::PutInZPlane(this);
+	TestTDStatics::putInCombatZPlane(this);
 }
 
 // Called every frame
@@ -48,7 +48,7 @@ void ABaddieSpawner::Tick( float DeltaTime )
 			if (AActor* spawnedActor = world->SpawnActor(ActorToSpawn->GetDefaultObject()->GetClass()))
 			{
 				spawnedActor->SetActorLocation(UKismetMathLibrary::RandomPointInBoundingBox(SpawnVolume->GetComponentLocation(), SpawnVolume->GetUnscaledBoxExtent()));
-				TestTDStatics::PutInZPlane(spawnedActor);
+				TestTDStatics::putInCombatZPlane(spawnedActor);
 			}
 		}
 	}

@@ -59,4 +59,5 @@ void ATowerPlacerButton::Tick( float DeltaTime )
 void ATowerPlacerButton::didSelect()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ATowerPlacerButton::didSelect()"));
+	onTowerSelected.Broadcast(towerType);
 }
